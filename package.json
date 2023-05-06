@@ -1,7 +1,6 @@
 {
   "name": "@laxels/llm",
-  "version": "1.0.0",
-  "type": "module",
+  "version": "1.0.2",
   "files": [
     "build"
   ],
@@ -17,13 +16,13 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@laxels/utils": "^1.0.2",
+    "@laxels/utils": "^1.0.4",
     "axios": "^1.4.0",
     "openai": "^3.2.1"
   },
   "scripts": {
     "build": "tsc",
-    "lint": "prettier --plugin-search-dir . --check src/ && eslint src/**/*",
-    "format": "prettier --plugin-search-dir . --write src/"
+    "lint": "prettier --plugin-search-dir . --check . && eslint src",
+    "format": "prettier --plugin-search-dir . --write ."
   }
 }
