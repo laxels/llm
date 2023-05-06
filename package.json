@@ -1,0 +1,29 @@
+{
+  "name": "@laxels/llm",
+  "version": "1.0.0",
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "main": "build/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.8.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@laxels/utils": "^1.0.2",
+    "axios": "^1.4.0",
+    "openai": "^3.2.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "prettier --plugin-search-dir . --check src/ && eslint src/**/*",
+    "format": "prettier --plugin-search-dir . --write src/"
+  }
+}
