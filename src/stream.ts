@@ -20,7 +20,7 @@ const DEFAULT_OPENAI_API_TIMEOUT = 2000;
 export async function getResponseStream(
   api: OpenAIApi,
   messages: ChatCompletionRequestMessage[]
-): Promise<ReadableStream | null> {
+): Promise<ReadableStream> {
   const apiResponse = await getAPIStream(api, { model: DEFAULT_MODEL, messages });
   if (apiResponse == null) {
     throw new Error(`Error getting response from OpenAI`);
@@ -28,6 +28,53 @@ export async function getResponseStream(
 
   const modifyChunkStream = new ModifyChunkStream(modifyChunk);
   return apiResponse.pipe(modifyChunkStream) as unknown as ReadableStream;
+}
+
+export async function streamSingleResponse(
+  api: OpenAIApi,
+  messages: ChatCompletionRequestMessage[]
+): Promise<string> {
+  const responseStream = await getResponseStream(api, messages);
+  const response = await streamChatResponse({
+    responseStream: responseStream as unknown as Readable
+  });
+  return response;
+}
+
+type StreamHandlers = {
+  onData?: (data: string) => void;
+  onEnd?: () => void;
+  onError?: () => void;
+};
+
+type StreamResponseParams = {
+  responseStream: Readable;
+} & StreamHandlers;
+
+async function streamChatResponse({
+  responseStream,
+  onData,
+  onEnd
+}: StreamResponseParams): Promise<string> {
+  let responseStr = ``;
+
+  for await (const chunk of responseStream) {
+    const jsonLines = (chunk as Buffer).toString();
+
+    for (const json of jsonLines.split(JSON_LINE_SEPARATOR).filter((l) => l)) {
+      const { data, finished } = JSON.parse(json) as StreamData;
+
+      onData?.(data);
+      responseStr += data;
+
+      if (finished) {
+        onEnd?.();
+        return responseStr;
+      }
+    }
+  }
+
+  return responseStr;
 }
 
 type GetAPIStreamParams = {
