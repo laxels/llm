@@ -14,7 +14,7 @@ export type StreamData = {
 };
 
 const JSON_LINE_SEPARATOR = `___BASILISK_JSON_LINE_SEPARATOR___`;
-const DEFAULT_MODEL = `gpt-4`;
+const DEFAULT_MODEL = `gpt-4-1106-preview`;
 const DEFAULT_OPENAI_API_TIMEOUT = 2000;
 
 export async function getResponseStream(
